@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Plant
+  - PlantaCentro
+  - PlantaCentral
   layers:
   - Default
   - TransparentFX

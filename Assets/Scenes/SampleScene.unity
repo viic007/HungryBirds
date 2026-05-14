@@ -597,7 +597,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &463514996
 Transform:
   m_ObjectHideFlags: 0
@@ -625,29 +625,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52935edfa4987a14ebbee95acd7ef93a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnOruga
-  orugaPrefab: {fileID: 7019848837227364725, guid: ebddb9b55ae70c54084faf768b01fcf6, type: 3}
-  todasLasPlantas:
-  - {fileID: 831541008}
-  - {fileID: 2038740555}
-  - {fileID: 465194457}
-  - {fileID: 243930997}
-  - {fileID: 1045353056}
-  - {fileID: 389983298}
-  - {fileID: 504460948}
-  - {fileID: 549586629}
-  puntosDeEntrada:
-  - {fileID: 139872569}
-  - {fileID: 1820939230}
-  - {fileID: 1843426202}
-  - {fileID: 1013808182}
-  - {fileID: 727313497}
-  - {fileID: 201440558}
-  - {fileID: 784333942}
-  - {fileID: 647378609}
-  - {fileID: 142995275}
-  - {fileID: 1964695768}
-  - {fileID: 1499086697}
-  - {fileID: 106237216}
+  prefabOruga: {fileID: 0}
+  tiempoEntreOrugas: 5
 --- !u!1 &465194456
 GameObject:
   m_ObjectHideFlags: 0

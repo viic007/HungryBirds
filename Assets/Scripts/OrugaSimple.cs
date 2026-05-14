@@ -4,45 +4,59 @@ public class OrugaSimple : MonoBehaviour
 {
     public Transform targetPlant;
     public float velocidad = 1.5f;
-
-    public float centroPasilloX = 0f;
-
-    private bool enPasillo = false;
+    public float centroPasilloY = 7.88f; 
+    private bool llegoAlPasillo = false;
 
     void Update()
     {
         if (targetPlant == null) return;
 
-        if (!enPasillo)
-        {
-            //Ir horizontalmente hacia el pasillo central
-            Vector2 destinoPasillo = new Vector2(centroPasilloX, transform.position.y);
-            transform.position = Vector2.MoveTowards(transform.position, destinoPasillo, velocidad * Time.deltaTime);
+        Vector2 objetivoActual;
 
-            // Si ya llegó al centro del pasillo, cambia de fase
-            if (Mathf.Abs(transform.position.x - centroPasilloX) < 0.1f)
+        // Si no está en el pasillo, su objetivo es la X del pasillo pero manteniendo su Y
+        if (!llegoAlPasillo)
+        {
+            objetivoActual = new Vector2(centroPasilloY, transform.position.x);
+
+            // Si ya está muy cerca de la X del pasillo, cambia de fase
+            if (Mathf.Abs(transform.position.x - centroPasilloY) < 0.1f)
             {
-                enPasillo = true;
+                llegoAlPasillo = true;
             }
         }
+        //  Una vez en el pasillo, va directa a la planta
         else
         {
-            // Bajar/Subir por el pasillo y luego entrar a la planta
-            // Para que sea 100% justo, primero llega a la altura (Y) de la planta
-            Vector2 destinoFinal = new Vector2(targetPlant.position.x, targetPlant.position.y);
-            transform.position = Vector2.MoveTowards(transform.position, destinoFinal, velocidad * Time.deltaTime);
+            objetivoActual = targetPlant.position;
         }
 
-        // Detección de llegada
-        if (Vector2.Distance(transform.position, targetPlant.position) < 0.2f)
+        // MOVIMIENTO
+        transform.position = Vector2.MoveTowards(transform.position, objetivoActual, velocidad * Time.deltaTime);
+
+        // ROTACIÓN (Para que la cabeza mire a donde camina)
+        ActualizarRotacion(objetivoActual);
+
+        // DISTANCIA PARA COMER PLANTA
+        if (Vector2.Distance(transform.position, targetPlant.position) < 0.1f)
         {
             LlegarALaPlanta();
         }
     }
 
+    void ActualizarRotacion(Vector2 destino)
+    {
+        Vector2 direccion = (destino - (Vector2)transform.position).normalized;
+        if (direccion != Vector2.zero)
+        {
+            float angulo = Mathf.Atan2(direccion.y, direccion.x) * Mathf.Rad2Deg;
+            // Si tus sprites miran a la derecha originalmente, usa 0. 
+            // Si miran hacia arriba, resta 90.
+            transform.rotation = Quaternion.Euler(0, 0, angulo);
+        }
+    }
+
     void LlegarALaPlanta()
     {
-        Debug.Log("La oruga se ha destruido porque cree que llegó a: " + targetPlant.name);
         if (GameManager.instance != null) GameManager.instance.LoseLife();
         Destroy(gameObject);
     }

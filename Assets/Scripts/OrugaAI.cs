@@ -2,57 +2,68 @@ using UnityEngine;
 
 public class OrugaAI : MonoBehaviour
 {
-    //Hace que la oruga se comporte como un teledirigido que se mueve hacia la planta más cercana. Si la oruga alcanza la planta, se destruye a sí misma. La oruga también tiene una función para recibir daño, y si su salud llega a cero, se destruye.
-    public Transform targetPlant;
-    public float speed = 0.5f;
-    public int health = 1;
+    // Variable estática: compartida por todas las orugas y spawners
+    public static int cantidadVivas = 0;
 
-    void Update()
+    private Transform player;
+    private Rigidbody2D rb;
+    public float speed = 50.0f;
+    public int vida = 2;
+
+    void Start()
     {
-        if (targetPlant != null)
-        {
-            Vector3 destino = targetPlant.position;
-            Vector3 actual = transform.position;
+        cantidadVivas++; // Suma al nacer
+        rb = GetComponent<Rigidbody2D>();
+        GameObject p = GameObject.FindGameObjectWithTag("Player");
+        if (p != null) player = p.transform;
 
-            // Movimiento horizontal primero
-            if (Mathf.Abs(actual.x - destino.x) > 0.05f)
-            {
-                float nuevaX = Mathf.MoveTowards(actual.x, destino.x, speed * Time.deltaTime);
-                transform.position = new Vector3(nuevaX, actual.y, actual.z);
-
-                // Girar sprite
-                transform.localScale = new Vector3(nuevaX < actual.x ? -1 : 1, 1, 1);
-            }
-            // Si ya llegamos a la X, Movimiento vertical
-            else if (Mathf.Abs(actual.y - destino.y) > 0.05f)
-            {
-                float nuevaY = Mathf.MoveTowards(actual.y, destino.y, speed * Time.deltaTime);
-                transform.position = new Vector3(actual.x, nuevaY, actual.z);
-            }
-            // Ya estamos en el sitio
-            else
-            {
-                LlegarALaPlanta();
-            }
-        }
+        // Ajuste de escala (puedes cambiar el 2f por el tamaño que prefieras)
+        transform.localScale = new Vector3(2f, 2f, 1f);
     }
 
-    void LlegarALaPlanta()
+    void FixedUpdate()
     {
-        if (GameManager.instance != null)
-        {
-            GameManager.instance.LoseLife();
-        }
+        if (player == null || rb == null) return;
 
-        Destroy(gameObject);
+        float diffX = player.position.x - transform.position.x;
+        float diffY = player.position.y - transform.position.y;
+        Vector2 movimiento = Vector2.zero;
+
+        // Movimiento no diagonal
+        if (Mathf.Abs(diffX) > Mathf.Abs(diffY))
+            movimiento = new Vector2(Mathf.Sign(diffX), 0);
+        else
+            movimiento = new Vector2(0, Mathf.Sign(diffY));
+
+        rb.AddForce(movimiento * speed);
+
+        if (movimiento.x != 0)
+            transform.localScale = new Vector3(movimiento.x > 0 ? 2f : -2f, 2f, 1f);
     }
 
-    // Choque de colisión con la planta
-    private void OnTriggerEnter2D(Collider2D collision)
+    // Se ejecuta cuando la oruga se destruye
+    void OnDestroy()
     {
-        if (collision.CompareTag("Plant"))
+        cantidadVivas--; // Resta al morir
+        if (cantidadVivas < 0) cantidadVivas = 0; // Seguridad
+    }
+
+    private void OnMouseDown()
+    {
+        vida--;
+        GetComponent<SpriteRenderer>().color = Color.red;
+        Invoke("ResetColor", 0.1f);
+        if (vida <= 0) Destroy(gameObject);
+    }
+
+    void ResetColor() => GetComponent<SpriteRenderer>().color = Color.white;
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
         {
-            LlegarALaPlanta();
+            if (GameManager.instance != null) GameManager.instance.LoseLife();
+            Destroy(gameObject);
         }
     }
 }

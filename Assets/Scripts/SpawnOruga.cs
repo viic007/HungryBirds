@@ -1,35 +1,37 @@
 using UnityEngine;
-
-
+using System.Collections;
 
 public class SpawnOruga : MonoBehaviour
 {
-    public GameObject orugaPrefab;
-    public Transform[] todasLasPlantas; // Arrastra las 8 plantas 
-    public Transform[] puntosDeEntrada; // Arrastra los pts de entrada
+    public GameObject prefabOruga;
+    public float tiempoDeEspera = 2.0f; // Tiempo que tarda en salir la siguiente tras morir la anterior
 
     void Start()
     {
-        InvokeRepeating("GenerarEnemigo", 2f, 10f);
+        if (prefabOruga != null) StartCoroutine(SpawnCiclo());
     }
 
-    void GenerarEnemigo()
+    IEnumerator SpawnCiclo()
     {
-        int indiceEntrada = Random.Range(0, puntosDeEntrada.Length);
-        Transform dondeNace = puntosDeEntrada[indiceEntrada];
+        while (true)
+        {
+            // Regla de oro: Solo si hay 0 orugas en el mapa
+            if (OrugaAI.cantidadVivas == 0)
+            {
+                // Un pequeño margen aleatorio para que no siempre salga del mismo sitio
+                // si hay varios spawners esperando
+                yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
 
-        // 2. Tirar el dado para la PLANTA (Esto es lo que te fallaba)
-        int indicePlanta = Random.Range(0, todasLasPlantas.Length);
-        Transform plantaDestino = todasLasPlantas[indicePlanta];
+                // Volvemos a comprobar por si otro spawner se adelantó en ese segundo
+                if (OrugaAI.cantidadVivas == 0)
+                {
+                    Instantiate(prefabOruga, transform.position, Quaternion.identity);
+                    Debug.Log("Nueva oruga en camino desde: " + gameObject.name);
+                }
+            }
 
-        // 3. Crear la oruga
-        GameObject nuevaOruga = Instantiate(orugaPrefab, dondeNace.position, Quaternion.identity);
-
-        // 4. DARLE el destino a esa oruga específica
-        nuevaOruga.GetComponent<OrugaAI>().targetPlant = plantaDestino;
+            // Revisa cada segundo si el mapa está libre
+            yield return new WaitForSeconds(1.0f);
+        }
     }
-
-
 }
-        
- 
