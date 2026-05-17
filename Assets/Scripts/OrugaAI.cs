@@ -116,7 +116,7 @@ public class OrugaAI : MonoBehaviour
         {
             if (GameManager.instance != null)
             {
-                // GameManager.instance.AddScore(10); 
+                GameManager.instance.AddScore(10); 
             }
             Destroy(gameObject);
         }

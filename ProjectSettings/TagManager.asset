@@ -47,11 +47,11 @@ TagManager:
   - name: Suelo
     uniqueID: 869991545
     locked: 0
-  - name: Personajes
-    uniqueID: 3751990155
-    locked: 0
   - name: Enemy
     uniqueID: 1496552209
+    locked: 0
+  - name: Personajes
+    uniqueID: 3751990155
     locked: 0
   m_RenderingLayers:
   - Default

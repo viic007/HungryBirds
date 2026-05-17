@@ -8,43 +8,38 @@ public class MovimientoOruga : MonoBehaviour
 
     void Start()
     {
-        SeleccionarPlantaCentro();
+        BuscarAlJugador();
     }
 
     void Update()
     {
         if (objetivo != null)
         {
-            // Mover hacia la planta
             transform.position = Vector2.MoveTowards(transform.position, objetivo.position, velocidad * Time.deltaTime);
 
-            if (Vector2.Distance(transform.position, objetivo.position) < 0.1f)
+            if (objetivo.position.x > transform.position.x)
             {
-                LlegamosALaPlanta();
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+            else if (objetivo.position.x < transform.position.x)
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
             }
         }
     }
 
-    void SeleccionarPlantaCentro()
+    void BuscarAlJugador()
     {
-        // Buscamos todos los objetos que tengan el tag "PlantaCentro"
-        GameObject[] plantas = GameObject.FindGameObjectsWithTag("PlantaCentro");
+        // Buscamos todos los objetos que tengan el tag "Player"
+        GameObject jugador = GameObject.FindGameObjectWithTag("Player");
 
-        if (plantas.Length > 0)
+        if (jugador != null)
         {
-            // Elegimos uno al azar de la lista
-            int indiceAzar = Random.Range(0, plantas.Length);
-            objetivo = plantas[indiceAzar].transform;
+            objetivo = jugador.transform; // Fijamos al jugador como nuestro objetivo
         }
         else
         {
-            Debug.LogWarning("No se encontraron plantas con el tag 'PlantaCentro'");
+            Debug.LogWarning("No se encontró al jugador. ¡Asegúrate de que tu personaje tiene puesto el Tag 'Player'!");
         }
-    }
-
-    void LlegamosALaPlanta()
-    {
-        Debug.Log("¡La oruga ha llegado a su destino y está comiendo!");
-        // Destroy(gameObject); 
     }
 }

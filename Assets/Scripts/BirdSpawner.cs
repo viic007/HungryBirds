@@ -52,7 +52,7 @@ public class BirdSpawner : MonoBehaviour
         GameObject newBird = Instantiate(birdPrefab, new Vector3(px, py, 0), Quaternion.identity);
 
         // Asignar objetivo
-        CrowAI ai = newBird.GetComponent<CrowAI>();
+        UrracaAI ai = newBird.GetComponent<UrracaAI>();
         if (ai != null)
         {
             ai.targetPlant = target.transform;

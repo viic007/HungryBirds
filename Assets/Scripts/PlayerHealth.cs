@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -10,6 +11,11 @@ public class PlayerHealth : MonoBehaviour
     [Header("Interfaz de Usuario (slider)")]
     public Slider sliderVida;
 
+    [Header("Efectos Visuales (Daño)")]
+    public SpriteRenderer spriteDelJugador; 
+    public Color colorDano = Color.red;     
+    private Color colorOriginal;
+
     void Start()
     {
         // Al empezar CADA DÍA, la vida se reinicia al 100% automáticamente
@@ -19,6 +25,11 @@ public class PlayerHealth : MonoBehaviour
         {
             sliderVida.maxValue = vidaMaxima;
             sliderVida.value = vidaActual;
+        }
+
+        if (spriteDelJugador != null)
+        {
+            colorOriginal = spriteDelJugador.color;
         }
     }
 
@@ -32,11 +43,23 @@ public class PlayerHealth : MonoBehaviour
             sliderVida.value = vidaActual;
         }
 
+        if (spriteDelJugador != null)
+        {
+            StartCoroutine(EfectoParpadeo());
+        }
+
         if (vidaActual <= 0)
         {
             vidaActual = 0;
             Morir();
         }
+    }
+
+    IEnumerator EfectoParpadeo()
+    {
+        spriteDelJugador.color = colorDano;
+        yield return new WaitForSeconds(0.15f);
+        spriteDelJugador.color = colorOriginal;
     }
 
     void Morir()
