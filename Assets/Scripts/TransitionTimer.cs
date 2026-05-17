@@ -1,17 +1,32 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class TransitionTimer : MonoBehaviour
 {
+    [Header("Configuración de la Transición")]
+    [Tooltip("Tiempo en segundos que se mostrará este cartel antes de avanzar.")]
+    public float tiempoDeEspera = 3f;
+
+    [Tooltip("Lvl3")]
+    public string nombreSiguienteEscena;
+
     void Start()
     {
-        // Espera 3 segundos y ejecuta la funci�n "CargarNivel"
-        Invoke("CargarNivel", 3f);
+        StartCoroutine(CuentaAtrasParaCambiar());
     }
 
-    void CargarNivel()
+    IEnumerator CuentaAtrasParaCambiar()
     {
-        // Carga la escena del nivel 
-        SceneManager.LoadScene(2);
+        yield return new WaitForSeconds(tiempoDeEspera);
+
+        if (!string.IsNullOrEmpty(nombreSiguienteEscena))
+        {
+            SceneManager.LoadScene(nombreSiguienteEscena);
+        }
+        else
+        {
+            Debug.LogError("¡Error! No has puesto el nombre de la siguiente escena en el Inspector de " + gameObject.name);
+        }
     }
 }

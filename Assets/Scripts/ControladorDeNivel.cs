@@ -12,7 +12,7 @@ public class ControladorDeNivel : MonoBehaviour
         if (tiempoDeNivel <= 0)
         {
             // Carga la escena de transición del Día 2
-            SceneManager.LoadScene("Day2");
+            //SceneManager.LoadScene("Day2");
         }
     }
 }

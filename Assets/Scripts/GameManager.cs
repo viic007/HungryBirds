@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -6,35 +6,54 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    [Header("Control del Tiempo y Días")]
+    [Header("Control del Tiempo y DÃ­as")]
     public int currentDay = 1;
     public float dayDuration = 80f;
     private float timer;
     private bool dayEnded = false;
 
-    [Header("Sistema de Puntuación")]
-    public int score = 0; 
+    [Header("Sistema de PuntuaciÃ³n")]
+    public int score = 0;
 
     [Header("Componentes de la Interfaz (UI)")]
-    public TextMeshProUGUI timerText; // Arrastra aquí el TextoTimer
+    public TextMeshProUGUI timerText;
     public TextMeshProUGUI scoreText;
 
     void Awake()
     {
         if (instance == null)
         {
+
             instance = this;
             DontDestroyOnLoad(gameObject);
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
-        else
+        else if (instance != this)
         {
+          
+            instance.scoreText = this.scoreText;
+            instance.timerText = this.timerText;
             Destroy(gameObject);
+        }
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        string nombre = scene.name.ToLower();
+
+        if (!nombre.Contains("transicion") && !nombre.Contains("menu") && !nombre.Contains("gameover"))
+        {
+            timer = dayDuration;
+            dayEnded = false;
+            ActualizarTextoScore();
         }
     }
 
     void Start()
     {
-        ResetTimer();
+        timer = dayDuration;
+        dayEnded = false;
     }
 
     void Update()
@@ -45,10 +64,8 @@ public class GameManager : MonoBehaviour
         if (timerText != null)
         {
             float tiempoSeguro = Mathf.Max(0, timer);
-
             int minutos = Mathf.FloorToInt(tiempoSeguro / 60f);
             int segundos = Mathf.FloorToInt(tiempoSeguro % 60f);
-
             timerText.text = string.Format("{0:00}:{1:00}", minutos, segundos);
         }
 
@@ -58,19 +75,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ResetTimer()
-    {
-        timer = dayDuration;
-        dayEnded = false;
-    }
-
     public void AddScore(int puntosASumar)
     {
         score += puntosASumar;
         ActualizarTextoScore();
     }
 
-    // Refresca el texto de los puntos en la pantalla
     void ActualizarTextoScore()
     {
         if (scoreText != null)
@@ -81,22 +91,29 @@ public class GameManager : MonoBehaviour
 
     void EndDay()
     {
-        dayEnded = true;
-        Debug.Log("Día " + currentDay + " completado.");
+        dayEnded = true; 
 
-        if (currentDay == 1)
+        string escenaActual = SceneManager.GetActiveScene().name.ToLower();
+
+        if (escenaActual.Contains("3") || escenaActual.Contains("win"))
         {
-            currentDay = 2;
-            SceneManager.LoadScene("TransicionDia2");
+            SceneManager.LoadScene("Ending");
         }
-        else if (currentDay == 2)
+
+        else if (escenaActual.Contains("2"))
         {
             currentDay = 3;
-            SceneManager.LoadScene("TransicionDia3");
+            SceneManager.LoadScene("Day3");
+        }
+
+        else if (escenaActual.Contains("1") || escenaActual.Contains("lvl1") || escenaActual.Contains("day1"))
+        {
+            currentDay = 2;
+            SceneManager.LoadScene("Day2");
         }
         else
         {
-            SceneManager.LoadScene("VictoriaFinal");
+            SceneManager.LoadScene("Ending");
         }
     }
 }

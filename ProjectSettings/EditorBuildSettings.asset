@@ -20,6 +20,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Lvl2.unity
     guid: a2548937962498a49a60bef41277ade6
+  - enabled: 1
+    path: Assets/Scenes/Day3.unity
+    guid: f07bc5a68cb5d164f86d875b3a1f81b6
+  - enabled: 1
+    path: Assets/Scenes/Lvl3.unity
+    guid: 3375338f4189c8c45ba48ed32f4079cd
+  - enabled: 1
+    path: Assets/Scenes/Ending.unity
+    guid: 5a2c178dd0dd048478e476460d79619b
+  - enabled: 1
+    path: Assets/Scenes/GameOver.unity
+    guid: c4a216c22127df04aa5d8c18572933d4
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 87ddaa8f2ad49884cad900eaeeb2c55d, type: 3}
   m_UseUCBPForAssetBundles: 0

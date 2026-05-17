@@ -313,6 +313,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9754c941f39079479094e4290fee804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  tiempoDeEspera: 3
+  nombreSiguienteEscena: Lvl1
 --- !u!1 &592815292
 GameObject:
   m_ObjectHideFlags: 0

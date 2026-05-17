@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5533941741062778300}
   - component: {fileID: 536517672532272102}
   - component: {fileID: 3418426443696768482}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Enemigo1_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1496552209
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 8
   m_MaskInteraction: 0
   m_Sprite: {fileID: -5913346099082595553, guid: 68780d1cdc883b9469a92b367c952625, type: 3}
@@ -202,5 +202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85826cd8f7235934d914d8343f600f60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrowAI
-  flySpeed: 4
+  flySpeed: 5
   targetPlant: {fileID: 0}
+  danoPorcentaje: 15
+  puntosRecompensa: 25

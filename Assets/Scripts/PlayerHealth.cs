@@ -1,72 +1,60 @@
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI; 
 
 public class PlayerHealth : MonoBehaviour
 {
-    [Header("Ajustes de Vida")]
-    public float vidaMaxima = 100f;
-    public float vidaActual;
+    public float vidaActual = 100f;
+    private float vidaMaxima = 100f;
 
-    [Header("Interfaz de Usuario (slider)")]
-    public Slider sliderVida;
+    private bool yaEstaMuerto = false;
 
-    [Header("Efectos Visuales (Daño)")]
-    public SpriteRenderer spriteDelJugador; 
-    public Color colorDano = Color.red;     
-    private Color colorOriginal;
+    [Header("Interfaz (UI)")]
+    public Slider sliderBarraVida;
 
     void Start()
     {
-        // Al empezar CADA DÍA, la vida se reinicia al 100% automáticamente
         vidaActual = vidaMaxima;
+        yaEstaMuerto = false;
 
-        if (sliderVida != null)
+        if (sliderBarraVida != null)
         {
-            sliderVida.maxValue = vidaMaxima;
-            sliderVida.value = vidaActual;
-        }
-
-        if (spriteDelJugador != null)
-        {
-            colorOriginal = spriteDelJugador.color;
+            sliderBarraVida.minValue = 0;
+            sliderBarraVida.maxValue = vidaMaxima;
+            sliderBarraVida.value = vidaActual; 
         }
     }
 
     public void TakeDamage(float cantidad)
     {
+        if (yaEstaMuerto) return;
+
         vidaActual -= cantidad;
         Debug.Log("¡Daño al jugador! Vida actual: " + vidaActual + "%");
 
-        if (sliderVida != null)
+        if (sliderBarraVida != null)
         {
-            sliderVida.value = vidaActual;
-        }
-
-        if (spriteDelJugador != null)
-        {
-            StartCoroutine(EfectoParpadeo());
+            sliderBarraVida.value = vidaActual;
         }
 
         if (vidaActual <= 0)
         {
-            vidaActual = 0;
-            Morir();
+            MorderElPolvo();
         }
     }
 
-    IEnumerator EfectoParpadeo()
+    void MorderElPolvo()
     {
-        spriteDelJugador.color = colorDano;
-        yield return new WaitForSeconds(0.15f);
-        spriteDelJugador.color = colorOriginal;
-    }
-
-    void Morir()
-    {
+        yaEstaMuerto = true;
         Debug.Log("Has muerto");
-        // Aquí puedes decidir qué pasa si el jugador muere dentro del día
-        // Por ejemplo, reiniciar el día actual:
-        // UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+
+        Time.timeScale = 0f;
+
+        if (GameManager.instance != null)
+        {
+            Destroy(GameManager.instance.gameObject);
+        }
+
+        SceneManager.LoadScene("GameOver");
     }
 }

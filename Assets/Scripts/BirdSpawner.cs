@@ -1,35 +1,48 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class BirdSpawner : MonoBehaviour
 {
     public GameObject birdPrefab;
-    public float spawnRate = 4f;
     public float minX = -12f, maxX = 12f, minY = -7f, maxY = 7f;
 
-    private List<GameObject> availablePlants = new List<GameObject>();
+    private GameObject[] allPlants;
     private int lastSide = -1;
 
     void Start()
     {
-        FillPlants();
-        InvokeRepeating("SpawnBird", 2f, spawnRate);
+        allPlants = GameObject.FindGameObjectsWithTag("Plant");
+
+        if (allPlants.Length == 0)
+        {
+            Debug.LogError("Â¡Ojo! No se ha encontrado ninguna planta con el Tag 'Plant'.");
+        }
+
+        // Al empezar el nivel, llamamos a la funciÃ³n para que espere entre 3 y 5 segundos
+        IniciarCuentaAtrasSiguienteUrraca();
     }
 
-    void FillPlants()
+    public void IniciarCuentaAtrasSiguienteUrraca()
     {
-        GameObject[] plants = GameObject.FindGameObjectsWithTag("Plant");
-        availablePlants.Clear();
-        availablePlants.AddRange(plants);
-        Debug.Log("Plantas encontradas: " + availablePlants.Count);
+        StartCoroutine(RutinaEsperaSiguienteUrraca());
+    }
+
+    IEnumerator RutinaEsperaSiguienteUrraca()
+    {
+        // Calculamos el tiempo aleatorio
+        float tiempoAleatorio = Random.Range(2f, 4f);
+        Debug.Log("Siguiente urraca en camino. Tiempo de respiro: " + tiempoAleatorio + " segundos.");
+
+        yield return new WaitForSeconds(tiempoAleatorio);
+
+        SpawnBird();
     }
 
     void SpawnBird()
     {
-        if (availablePlants.Count == 0) FillPlants();
-        if (availablePlants.Count == 0) return; // Por si no hay plantas con Tag "Plant"
+        if (allPlants == null || allPlants.Length == 0) return;
 
-        // Lado de aparición
         int side;
         do { side = Random.Range(0, 4); } while (side == lastSide);
         lastSide = side;
@@ -43,19 +56,18 @@ public class BirdSpawner : MonoBehaviour
             case 3: px = Random.Range(minX, maxX); py = minY; break;
         }
 
-        // Elegir planta sin repetir
-        int index = Random.Range(0, availablePlants.Count);
-        GameObject target = availablePlants[index];
-        availablePlants.RemoveAt(index);
+        int index = Random.Range(0, allPlants.Length);
+        GameObject target = allPlants[index];
 
-        // Crear pájaro
+        if (target == null) return;
+
         GameObject newBird = Instantiate(birdPrefab, new Vector3(px, py, 0), Quaternion.identity);
 
-        // Asignar objetivo
         UrracaAI ai = newBird.GetComponent<UrracaAI>();
         if (ai != null)
         {
             ai.targetPlant = target.transform;
+            ai.AsignarSpawner(this);
         }
     }
 }

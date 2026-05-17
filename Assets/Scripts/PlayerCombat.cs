@@ -32,9 +32,15 @@ public class PlayerCombat : MonoBehaviour
             if (scriptOruga != null)
             {
                 scriptOruga.RecibirDano(attackDamage);
+                continue;
             }
             Debug.Log("¡Le dimos a " + enemy.name + "!");
 
+            UrracaAI scriptUrraca = enemy.GetComponent<UrracaAI>();
+            if (scriptUrraca != null)
+            {
+                scriptUrraca.RecibirDano();
+            }
         }
     }
 
