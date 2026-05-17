@@ -1,19 +1,18 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
-    public int vidas = 5;
     public static GameManager instance;
+
+    [Header("Control del Tiempo y Días")]
     public int currentDay = 1;
-    public float dayDuration = 80f; // 80 segundos por día
+    public float dayDuration = 80f;
     private float timer;
     private bool dayEnded = false;
 
     void Awake()
     {
-        // Esto hace que el GameManager sea único y no se borre entre escenas
         if (instance == null)
         {
             instance = this;
@@ -50,36 +49,21 @@ public class GameManager : MonoBehaviour
     void EndDay()
     {
         dayEnded = true;
-        Debug.Log("Día" + currentDay + " completado.");
-
-        // Si estamos en el Día 1, vamos a la pantalla de "Día 2", etc.
+        Debug.Log("Día " + currentDay + " completado.");
 
         if (currentDay == 1)
         {
             currentDay = 2;
             SceneManager.LoadScene("TransicionDia2");
-            
         }
         else if (currentDay == 2)
         {
             currentDay = 3;
             SceneManager.LoadScene("TransicionDia3");
         }
-        else 
+        else
         {
             SceneManager.LoadScene("VictoriaFinal");
-        }
-    }
-
-    public void LoseLife()
-    {
-        vidas--; // Resta una vida
-        Debug.Log("¡Una oruga se ha comido una planta! Vidas restantes: " + vidas);
-
-        if (vidas <= 0)
-        {
-            Debug.Log("Game Over");
-            // Entrada de la escena de Menú o Game Over
         }
     }
 }

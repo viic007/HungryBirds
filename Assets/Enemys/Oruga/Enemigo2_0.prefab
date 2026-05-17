@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1072630904648070172}
   - component: {fileID: 8207949959355887560}
   - component: {fileID: 8151534752321203077}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Enemigo2_0
   m_TagString: PlantaCentral
   m_Icon: {fileID: 0}
@@ -81,9 +81,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -542977141
-  m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingLayerID: 1496552209
+  m_SortingLayer: 3
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 503284769017503681, guid: 1eedd0d269e2d94499027228386f616f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -202,5 +202,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf77292a675cab4c9e911b9770bab1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OrugaAI
-  speed: 2
+  speed: 2.5
   vida: 2
+  danoAlJugador: 5

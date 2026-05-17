@@ -81,8 +81,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1496552209
+  m_SortingLayer: 3
   m_SortingOrder: 8
   m_MaskInteraction: 0
   m_Sprite: {fileID: -5913346099082595553, guid: 68780d1cdc883b9469a92b367c952625, type: 3}
@@ -203,7 +203,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrowAI
   flySpeed: 4
-  minX: -7
-  maxX: 7
-  minY: -4
-  maxY: 4
+  targetPlant: {fileID: 0}

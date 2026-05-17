@@ -6,24 +6,28 @@ public class OrugaAI : MonoBehaviour
 
     private Transform player;
     private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer;
 
     [Header("Ajustes de Movimiento")]
-    public float speed = 3.0f; // Ahora un valor pequeño (2-5) es suficiente
+    public float speed = 3.0f;
     public int vida = 2;
+
+    [Header("Ajustes de Ataque")]
+    public int danoAlJugador = 10;
 
     void Start()
     {
         cantidadVivas++;
         rb = GetComponent<Rigidbody2D>();
 
-        // Buscamos al jugador
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+       
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) player = p.transform;
-
-        // Escala robusta
+    
         transform.localScale = new Vector3(2f, 2f, 1f);
 
-        // CONFIGURACIÓN DE RIGIDBODY POR CÓDIGO (Para evitar errores manuales)
         if (rb != null)
         {
             rb.gravityScale = 0;
@@ -72,21 +76,48 @@ public class OrugaAI : MonoBehaviour
         if (cantidadVivas < 0) cantidadVivas = 0;
     }
 
-    private void OnMouseDown()
+    void ResetColor()
     {
-        vida--;
-        GetComponent<SpriteRenderer>().color = Color.red;
-        Invoke("ResetColor", 0.1f);
-        if (vida <= 0) Destroy(gameObject);
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = Color.white;
+        }
     }
-
-    void ResetColor() => GetComponent<SpriteRenderer>().color = Color.white;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            if (GameManager.instance != null) GameManager.instance.LoseLife();
+            PlayerHealth vidaJugador = other.GetComponent<PlayerHealth>();
+            if (vidaJugador != null)
+            {
+                vidaJugador.TakeDamage(danoAlJugador);
+            }
+
+            else
+            {
+                Debug.LogWarning("El jugador no tiene un componente PlayerHealth.");
+            }
+
+            Destroy(gameObject);
+        }
+    }
+
+    public void RecibirDano(int dano)
+    {
+        vida -= dano;
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = Color.red;
+            Invoke("ResetColor", 0.15f);
+        }
+
+        if (vida <= 0)
+        {
+            if (GameManager.instance != null)
+            {
+                // GameManager.instance.AddScore(10); 
+            }
             Destroy(gameObject);
         }
     }

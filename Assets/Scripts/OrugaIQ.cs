@@ -5,6 +5,7 @@ public class OrugaIQ : MonoBehaviour
 {
     private NavMeshAgent agent;
     public Transform targetPlant;
+    public int vida = 2;
 
     void Start()
     {
@@ -21,16 +22,24 @@ public class OrugaIQ : MonoBehaviour
         }
     }
 
-    private void OnMouseDown()
+    public void RecibirDano(int dano)
     {
-        Destroy(gameObject); // Matar al hacer clic
+        vida -= dano;
+        if (vida <= 0)
+        {
+            Morir();
+        }
+    }
+
+    private void Morir()
+    {
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Plant"))
         {
-            GameManager.instance.LoseLife();
             Destroy(gameObject);
         }
     }
