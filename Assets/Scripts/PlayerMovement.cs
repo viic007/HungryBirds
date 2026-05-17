@@ -1,85 +1,72 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.InputSystem; // Aï¿½adido para asegurar la compatibilidad
 
+// Estas lï¿½neas obligan a Unity a asegurarse de que el personaje tenga estos componentes
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
-    [Header("Sistema de Vida")]
-    public float vidaMax = 100f;
-    public float vidaActual;
-    public Slider barraDeVida;
+    
 
-    private Rigidbody2D playerRb;
+    public Rigidbody2D playerRb;
     private Vector2 moveInput;
     private Animator playerAnimator;
 
-    void Start()
+    // Referencia al cï¿½digo generado por el Input System
+    private PlayerControls controls;
+
+    private void Awake()
     {
+        // 1. Inicializamos los controles
+        controls = new PlayerControls();
         playerRb = GetComponent<Rigidbody2D>();
         playerAnimator = GetComponent<Animator>();
     }
 
-    void Update()
+    private void OnEnable()
     {
-        float moveX = Input.GetAxisRaw("Horizontal");
-        float moveY = Input.GetAxisRaw("Vertical");
-        moveInput = new Vector2(moveX, moveY).normalized;
+        // 2. Activamos TODOS los mapas de acciï¿½n a la vez (mï¿½s seguro que controls.Player.Enable())
+        controls.Enable();
+    }
 
-        playerAnimator.SetFloat("Horizontal", moveX);
-        playerAnimator.SetFloat("Vertical", moveY);
-        playerAnimator.SetFloat("Speed", moveInput.sqrMagnitude);
+    private void OnDisable()
+    {
+        // 3. Desactivamos todo al apagar
+        controls.Disable();
+    }
+
+    private void Start()
+    {
+        // 4. Obtenemos las referencias
+        playerRb = GetComponent<Rigidbody2D>();
+        playerAnimator = GetComponent<Animator>();
+    }
+
+    public void Move(InputAction.CallbackContext cntx)
+    {
+        moveInput = cntx.ReadValue<Vector2>();
+        Debug.Log("caquita");
+    }
+    
+    private void Update()
+    {
+      
+        // 6. Imprimimos para verificar
+       // Debug.Log("Direccion del Input: " + moveInput); 
+
+        // 7. Pasamos los valores al Animator (con una comprobaciï¿½n de seguridad)
+        if (playerAnimator != null)
+        {
+            playerAnimator.SetFloat("Horizontal", moveInput.x);
+            playerAnimator.SetFloat("Vertical", moveInput.y);
+            playerAnimator.SetFloat("Speed", moveInput.sqrMagnitude);
+        }
     }
 
     private void FixedUpdate()
     {
-        playerRb.MovePosition(playerRb.position + moveInput * speed * Time.fixedDeltaTime);
-    }
-}
+        playerRb.linearVelocity = moveInput * speed;
 
-
-public class PlayerHealth : MonoBehaviour
-{
-    [Header("Configuración de Vida")]
-    public float vidaMax = 100f;
-    private float vidaActual;
-
-    [Header("Referencia a la UI")]
-    public Slider barraDeVida; // Arrastra aquí tu Slider desde el Inspector
-
-    void Start()
-    {
-        vidaActual = vidaMax;
-        ActualizarInterfaz();
-    }
-
-    // Esta función la llamaremos cuando una oruga nos toque
-    public void RecibirDano(float cantidad)
-    {
-        vidaActual -= cantidad;
-
-        // Evitamos que la vida baje de 0
-        vidaActual = Mathf.Clamp(vidaActual, 0, vidaMax);
-
-        ActualizarInterfaz();
-
-        if (vidaActual <= 0)
-        {
-            Morir();
-        }
-    }
-
-    void ActualizarInterfaz()
-    {
-        if (barraDeVida != null)
-        {
-            // El valor del Slider va de 0 a 1 (0% a 100%)
-            barraDeVida.value = vidaActual / vidaMax;
-        }
-    }
-
-    void Morir()
-    {
-        Debug.Log("Jane se ha quedado sin energía...");
-        // Aquí podrías reiniciar el nivel o poner una animación
     }
 }
